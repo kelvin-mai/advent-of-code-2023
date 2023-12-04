@@ -1,4 +1,4 @@
-(ns aoc.day1
+(ns aoc.d01
   (:require [clojure.string :as s]))
 
 (def part1-testcase
@@ -47,15 +47,15 @@ zoneight234
        (map parse-first-last)
        (reduce +)))
 
-(defn part1 []
-  (calibrate (slurp "resources/day1.txt") find-digits))
+(defn part1 [input]
+  (calibrate input find-digits))
 
-(defn part2 []
-  (calibrate (slurp "resources/day1.txt") find-digit-words))
+(defn part2 [input]
+  (calibrate input find-digit-words))
 
 (comment
   (calibrate part1-testcase find-digits)
   (calibrate part2-testcase find-digit-words)
-  (part1) ;; => 54877
-  (part2) ;; => 54100
+  (part1 (slurp "resources/day1.txt")) ;; => 54877
+  (part2 (slurp "resources/day1.txt")) ;; => 54100
   )

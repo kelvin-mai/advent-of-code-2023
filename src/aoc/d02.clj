@@ -1,4 +1,4 @@
-(ns aoc.day2
+(ns aoc.d02
   (:require [clojure.string :as s]))
 
 (def testcase
