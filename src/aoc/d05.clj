@@ -1,41 +1,6 @@
 (ns aoc.d05
   (:require [clojure.string :as s]))
 
-(def testinput
-  "seeds: 79 14 55 13
-
-seed-to-soil map:
-50 98 2
-52 50 48
-
-soil-to-fertilizer map:
-0 15 37
-37 52 2
-39 0 15
-
-fertilizer-to-water map:
-49 53 8
-0 11 42
-42 0 7
-57 7 4
-
-water-to-light map:
-88 18 7
-18 25 70
-
-light-to-temperature map:
-45 77 23
-81 45 19
-68 64 13
-
-temperature-to-humidity map:
-0 69 1
-1 0 69
-
-humidity-to-location map:
-60 56 37
-56 93 4")
-
 (defn nums->vec [s]
   (->> (-> s
            s/trim
@@ -61,7 +26,7 @@ humidity-to-location map:
   (let [conversion (->> (get m k)
                         (filter
                          (fn [[_ source r]]
-                           (< source v (+ source r))))
+                           (<= source v (+ source r))))
                         first)
         [dest source _] conversion]
     (if conversion
@@ -91,19 +56,30 @@ humidity-to-location map:
          (map (partial seed->location conversion-map))
          (apply min))))
 
-(defn seed-range->min
-  ([seed-range conversion-map]
-   (seed-range->min java.lang.Integer/MAX_VALUE seed-range conversion-map))
-  ([acc [start remaining] conversion-map]
-   (if (= remaining 0)
-     acc
-     (seed-range->min
-      (let [location (seed->location conversion-map (+ start remaining))]
-        (if (< location acc)
-          location
-          acc))
-      [start (dec remaining)]
-      conversion-map))))
+(defn seed-range->min-step
+  [acc [start remaining] conversion-map remaining-steps]
+  (if (< remaining-steps 0)
+    [acc [start remaining]]
+    (if (< remaining 0)
+      acc
+      (recur
+       (let [location (seed->location conversion-map (+ start remaining))]
+         (if (< location acc)
+           location
+           acc))
+       [start (dec remaining)]
+       conversion-map
+       (dec remaining-steps)))))
+
+(defn seed-range->min [seed-range conversion-map]
+  (let [depth 10000]
+    (loop [acc java.lang.Integer/MAX_VALUE
+           seed-range seed-range]
+      (let [curr (seed-range->min-step acc seed-range conversion-map depth)]
+        #_(println "Current iteration value: " curr) ;; DEBUG
+        (if (int? curr)
+          curr
+          (recur (first curr) (second curr)))))))
 
 (defn part2 [input]
   (let [input (s/split input #"\n")
@@ -115,9 +91,5 @@ humidity-to-location map:
                   nums->vec)]
     (->> seeds
          (partition 2)
-         ; works with test input
-         ; stack overflows with puzzle input
          (map #(seed-range->min % conversion-map))
-         (apply min)
-         ;
-         )))
+         (apply min))))

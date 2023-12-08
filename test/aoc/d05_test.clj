@@ -47,4 +47,5 @@ humidity-to-location map:
 
   (testing "day 02 part2"
     (is (= 46 (part2 testcase)))
-    (is (= 0 (part2 input)))))
+    ;; * Note * puzzle input takes 4 hours to complete, don't run in test runner 
+    #_(is (= 27992443 (part2 input)))))
