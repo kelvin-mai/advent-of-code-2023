@@ -1,17 +1,12 @@
 (ns aoc.d06
   (:require [clojure.string :as s]))
 
-(def testcase
-  "Time:      7  15   30
-Distance:  9  40  200")
-
 (defn parse-input [input]
   (->> (s/split input #"\n")
        (map #(s/split % #":"))
        (map second)
        (map s/trim)
-       (map #(re-seq #"\d+" %))
-       #_(map #(map parse-long %))))
+       (map #(re-seq #"\d+" %))))
 
 (defn combos [[t d]]
   (loop [s 0
