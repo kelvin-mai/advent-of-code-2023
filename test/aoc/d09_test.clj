@@ -10,7 +10,7 @@
 (def input
   (slurp "resources/d09.txt"))
 
-(deftest day8-test
+(deftest day9-test
   (testing "day 09 part1"
     (is (= 114 (part1 testcase)))
     (is (= 1939607039 (part1 input))))
